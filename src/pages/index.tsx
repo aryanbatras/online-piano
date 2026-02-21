@@ -1,10 +1,10 @@
 import dynamic from 'next/dynamic';
 
-const Piano = dynamic(() => import('../components/piano/Piano'), {
+const ConnectionTest = dynamic(() => import('../components/ConnectionTest'), {
   ssr: false, 
 });
 
 export function PianoPage() {
-  return <Piano />;
+  return <ConnectionTest />;
 }
 export default PianoPage;

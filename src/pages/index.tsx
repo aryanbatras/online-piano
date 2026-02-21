@@ -1,5 +1,10 @@
-import { Piano } from "@/components/piano";
+import dynamic from 'next/dynamic';
 
-export default function Home() {
+const Piano = dynamic(() => import('../components/piano/Piano'), {
+  ssr: false, 
+});
+
+export function PianoPage() {
   return <Piano />;
 }
+export default PianoPage;

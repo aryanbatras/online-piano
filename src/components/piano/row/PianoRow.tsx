@@ -3,8 +3,16 @@ import { usePianoRow } from "@/hooks/piano/row";
 import styles from "@/styles/Piano.module.css";
 import { PianoKey } from "../key";
 
-export const PianoRow = ({row,activeKeys,onPressed,onReleased,showKeyboardMappings}: PianoRowProps) => {
+export const PianoRow = ({row,activeKeys,remoteActiveKeys,onPressed,onReleased,showKeyboardMappings}: PianoRowProps) => {
   const { whiteKeys, blackKeys, getBlackKeyStyle } = usePianoRow(row);
+
+  const isKeyActive = (keyId: number) => {
+    return activeKeys.has(keyId) || (remoteActiveKeys && remoteActiveKeys.has(keyId));
+  };
+
+  const isRemoteKey = (keyId: number) => {
+    return remoteActiveKeys?.has(keyId) || false;
+  };
 
   return (
     <div className={styles.pianoRow}>
@@ -13,7 +21,8 @@ export const PianoRow = ({row,activeKeys,onPressed,onReleased,showKeyboardMappin
           <PianoKey
             key={pianoKey.id}
             pianoKey={pianoKey}
-            isActive={activeKeys.has(pianoKey.id)}
+            isActive={isKeyActive(pianoKey.id) || false}
+            isRemote={isRemoteKey(pianoKey.id) || false}
             onPressed={onPressed}
             onReleased={onReleased}
             showKeyboardMappings={showKeyboardMappings}
@@ -23,7 +32,8 @@ export const PianoRow = ({row,activeKeys,onPressed,onReleased,showKeyboardMappin
           <PianoKey
             key={pianoKey.id}
             pianoKey={pianoKey}
-            isActive={activeKeys.has(pianoKey.id)}
+            isActive={isKeyActive(pianoKey.id) || false}
+            isRemote={isRemoteKey(pianoKey.id) || false}
             onPressed={onPressed}
             onReleased={onReleased}
             showKeyboardMappings={showKeyboardMappings}

@@ -9,6 +9,110 @@
   position: relative;
 }
 
+.roomControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.connectionStatus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.roomInfo {
+  color: #00ff88;
+  font-weight: 500;
+}
+
+.connectionButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+}
+
+.roomJoin {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.roomInput {
+  flex: 1;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.roomInput:focus {
+  border-color: #00ff88;
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+}
+
+.roomInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.roomButton {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.roomButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #00ff88;
+}
+
+.roomButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remoteKey {
+  box-shadow: 0 0 20px rgba(255, 100, 100, 0.8) !important;
+  background: linear-gradient(135deg, rgba(255, 100, 100, 0.3), rgba(255, 150, 150, 0.2)) !important;
+  animation: remotePulse 0.5s ease-in-out;
+}
+
+@keyframes remotePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(255, 100, 100, 0.8);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 100, 100, 1);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(255, 100, 100, 0.8);
+  }
+}
+
 .pianoContainer::before {
   content: '';
   position: absolute;

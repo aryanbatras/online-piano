@@ -2,12 +2,14 @@ import { PianoKeyProps } from '@/types/piano';
 import { usePianoKey } from '@/hooks/piano/key';
 import styles from '@/styles/Piano.module.css';
 
-export const PianoKey = ({ pianoKey, isActive, onPressed, onReleased, showKeyboardMappings, style }: PianoKeyProps) => {
+export const PianoKey = ({ pianoKey, isActive, isRemote, onPressed, onReleased, showKeyboardMappings, style }: PianoKeyProps) => {
   const { events, keyClasses, keyboardMapping } = usePianoKey(pianoKey, isActive, onPressed, onReleased, showKeyboardMappings);
+
+  const combinedClasses = `${keyClasses} ${isRemote ? styles.remoteKey : ''}`;
 
   return (
     <div
-      className={keyClasses}
+      className={combinedClasses}
       style={style}
       onMouseDown={events.handleMouseDown}
       onMouseUp={events.handleMouseUp}

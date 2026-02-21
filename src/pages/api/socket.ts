@@ -71,6 +71,30 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse & { socket: any
         socket.emit('pong', 'Pong from server!');
       });
 
+      socket.on('piano-key-press', (data: { roomId: string; keyId: number; userId: string }) => {
+        const { roomId, keyId, userId } = data;
+        
+        socket.to(roomId).emit('remote-key-press', {
+          keyId,
+          userId,
+          timestamp: Date.now()
+        });
+        
+        console.log(`User ${userId} pressed key ${keyId} in room ${roomId}`);
+      });
+
+      socket.on('piano-key-release', (data: { roomId: string; keyId: number; userId: string }) => {
+        const { roomId, keyId, userId } = data;
+        
+        socket.to(roomId).emit('remote-key-release', {
+          keyId,
+          userId,
+          timestamp: Date.now()
+        });
+        
+        console.log(`User ${userId} released key ${keyId} in room ${roomId}`);
+      });
+
       socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
         

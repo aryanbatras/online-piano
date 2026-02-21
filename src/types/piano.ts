@@ -11,6 +11,7 @@ export interface PianoKey {
 export interface PianoKeyProps {
   pianoKey: PianoKey;
   isActive: boolean;
+  isRemote?: boolean;
   onPressed: (keyId: number) => void;
   onReleased: (keyId: number) => void;
   showKeyboardMappings: boolean;
@@ -25,6 +26,7 @@ export interface PianoRow {
 export interface PianoRowProps {
   row: PianoRow;
   activeKeys: Set<number>;
+  remoteActiveKeys?: Map<number, string>;
   onPressed: (keyId: number) => void;
   onReleased: (keyId: number) => void;
   showKeyboardMappings: boolean;

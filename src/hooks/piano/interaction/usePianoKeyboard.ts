@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useKeyboardMappings } from '../../useKeyboardMappings';
+import { useKeyboardMappings } from '../mapping/useKeyboardMappings';
 
 export function usePianoKeyboard(
   onKeyPressed: (keyId: number) => void,

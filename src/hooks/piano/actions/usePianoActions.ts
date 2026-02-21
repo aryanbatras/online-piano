@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAudioPlayer } from '../../useAudioPlayer';
+import { useAudioPlayer } from '../../audio/useAudioPlayer';
 
 export function usePianoActions() {
   const { play, stop, preload } = useAudioPlayer();

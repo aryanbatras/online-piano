@@ -1,5 +1,5 @@
 import { pianoRows } from "@/data/pianoData";
-import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import { useAudioRecorder } from "@/hooks/audio/useAudioRecorder";
 import { usePianoSystem, usePianoUI } from "@/hooks/piano";
 import styles from "@/styles/Piano.module.css";
 import { PianoRow } from "./row";

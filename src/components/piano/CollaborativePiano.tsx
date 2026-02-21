@@ -99,14 +99,14 @@ export default function CollaborativePiano() {
       <div className={styles.pianoTitle}>Collaborative Virtual Piano</div>
       
       <div className={styles.roomControls}>
-        <div className={styles.connectionStatus}>
+        {/* <div className={styles.connectionStatus}>
           <span>{isConnected ? '🟢 Connected' : '🔴 Disconnected'}</span>
           {currentRoom && (
             <span className={styles.roomInfo}>
               Room: {currentRoom} | Users: {userCount}
             </span>
           )}
-        </div>
+        </div> */}
         
         <div className={styles.connectionButtons}>
           <button 

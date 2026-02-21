@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef, useState } from 'react';
-import RecordRTC, { StereoAudioRecorder, State } from 'recordrtc';
+import { useEffect, useRef, useState } from "react";
+import RecordRTC, { StereoAudioRecorder, State } from "recordrtc";
 
 export const useAudioRecorder = () => {
   const [recordingTime, setRecordingTime] = useState(0);
@@ -10,34 +10,38 @@ export const useAudioRecorder = () => {
   const intervalRef = useRef<any>(null);
   const recorderRef = useRef<any>(null);
 
-  const startRecording = () => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((microphone) => {
-        recorderRef.current = new RecordRTC(microphone, {
-          type: 'audio',
-          recorderType: StereoAudioRecorder,
-          desiredSampRate: 16000,
-          disableLogs: true,
-        });
-
-        recorderRef.current.startRecording();
-        recorderRef.current.microphone = microphone;
-        setRecordingStatus('recording');
-        setIsRecording(true);
-      })
-      .catch((error) => {
-        alert('Unable to access your microphone.');
-        console.error(error);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
       });
+
+      recorderRef.current = new RecordRTC(stream, {
+        type: "audio",
+        recorderType: StereoAudioRecorder,
+        desiredSampRate: 16000,
+        disableLogs: true,
+      });
+
+      recorderRef.current.startRecording();
+      recorderRef.current.stream = stream;
+      setRecordingStatus("recording");
+      setIsRecording(true);
+    } catch (error) {
+      alert("Unable to access system audio. Make sure to check 'Share audio' when selecting a tab or screen.");
+      console.error(error);
+    }
   };
 
   const stopRecording = (
-    callBack?: (blob?: Blob, blobURL?: string) => void
+    callBack?: (blob?: Blob, blobURL?: string) => void,
   ) => {
     recorderRef.current?.stopRecording((blobURL: string) => {
-      recorderRef.current.microphone.stop();
-      setRecordingStatus('stopped');
+      if (recorderRef.current?.stream) {
+        recorderRef.current.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      }
+      setRecordingStatus("stopped");
       setIsRecording(false);
       setRecordingTime(0);
       callBack?.(recorderRef.current?.getBlob(), blobURL);
@@ -46,13 +50,13 @@ export const useAudioRecorder = () => {
 
   const pauseRecording = () => {
     recorderRef.current?.pauseRecording();
-    setRecordingStatus('paused');
+    setRecordingStatus("paused");
     setIsRecording(false);
   };
 
   const resumeRecording = () => {
     recorderRef.current?.resumeRecording();
-    setRecordingStatus('recording');
+    setRecordingStatus("recording");
     setIsRecording(true);
   };
 
@@ -65,11 +69,11 @@ export const useAudioRecorder = () => {
   };
 
   const toggleRecord = () => {
-    if (isRecording || recordingStatus === 'recording') {
+    if (isRecording || recordingStatus === "recording") {
       stopRecording((blob, blobURL) => {
         if (blob) {
           const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = url;
           a.download = `piano-recording-${Date.now()}.wav`;
           document.body.appendChild(a);
@@ -84,13 +88,13 @@ export const useAudioRecorder = () => {
   };
 
   useEffect(() => {
-    if (recordingStatus == 'recording') {
+    if (recordingStatus == "recording") {
       intervalRef.current = setInterval(() => {
         setRecordingTime((prev) => prev + 1);
       }, 1000);
     }
 
-    if (!recordingStatus || recordingStatus == 'stopped') {
+    if (!recordingStatus || recordingStatus == "stopped") {
       clearInterval(intervalRef.current!);
     }
 

@@ -1,4 +1,4 @@
-import Piano from "@/components/Piano";
+import { Piano } from "@/components/piano";
 
 export default function Home() {
   return <Piano />;

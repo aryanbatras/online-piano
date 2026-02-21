@@ -8,10 +8,28 @@ export interface PianoKey {
   keyboardKey?: string;
 }
 
+export interface PianoKeyProps {
+  pianoKey: PianoKey;
+  isActive: boolean;
+  onPressed: (keyId: number) => void;
+  onReleased: (keyId: number) => void;
+  showKeyboardMappings: boolean;
+  style?: React.CSSProperties;
+}
+
 export interface PianoRow {
   rowNumber: number;
   keys: PianoKey[];
 }
+
+export interface PianoRowProps {
+  row: PianoRow;
+  activeKeys: Set<number>;
+  onPressed: (keyId: number) => void;
+  onReleased: (keyId: number) => void;
+  showKeyboardMappings: boolean;
+}
+
 
 export interface AudioPlayer {
   play: (keyId: number) => void;

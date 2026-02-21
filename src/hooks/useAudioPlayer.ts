@@ -1,30 +1,35 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { AudioPlayer } from '@/types/piano';
 import { pianoKeys } from '@/data/pianoData';
+import { createAudioContext } from '@/utils';
 
 export const useAudioPlayer = (): AudioPlayer => {
-  const audioCache = useRef<Map<number, HTMLAudioElement>>(new Map());
   const activeAudioNodes = useRef<Map<number, AudioBufferSourceNode>>(new Map());
   const audioContext = useRef<AudioContext | null>(null);
   const audioBuffers = useRef<Map<number, AudioBuffer>>(new Map());
   const isPreloaded = useRef(false);
+  const isLoading = useRef(false);
 
-  const initializeAudioContext = useCallback(() => {
+  const initializeAudioContext = () => {
     if (!audioContext.current) {
-      audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContext.current = createAudioContext();
     }
     return audioContext.current;
-  }, []);
+  };
 
-  const preload = useCallback(async () => {
-    if (isPreloaded.current) return;
-
+  const preload = async () => {
+    if (isPreloaded.current || isLoading.current) return;
+    
+    isLoading.current = true;
     const ctx = initializeAudioContext();
     
     try {
       const loadPromises = pianoKeys.map(async (key) => {
         try {
           const response = await fetch(key.audioPath);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
           audioBuffers.current.set(key.id, audioBuffer);
@@ -37,10 +42,12 @@ export const useAudioPlayer = (): AudioPlayer => {
       isPreloaded.current = true;
     } catch (error) {
       console.error('Error preloading audio:', error);
+    } finally {
+      isLoading.current = false;
     }
-  }, [initializeAudioContext]);
+  };
 
-  const play = useCallback((keyId: number) => {
+  const play = (keyId: number) => {
     const ctx = initializeAudioContext();
     const audioBuffer = audioBuffers.current.get(keyId);
     
@@ -71,9 +78,9 @@ export const useAudioPlayer = (): AudioPlayer => {
     } catch (error) {
       console.error(`Error playing key ${keyId}:`, error);
     }
-  }, [initializeAudioContext]);
+  };
 
-  const stop = useCallback((keyId: number) => {
+  const stop = (keyId: number) => {
     const activeSource = activeAudioNodes.current.get(keyId);
     
     if (activeSource) {
@@ -98,7 +105,7 @@ export const useAudioPlayer = (): AudioPlayer => {
         console.error(`Error stopping key ${keyId}:`, error);
       }
     }
-  }, [initializeAudioContext]);
+  };
 
   useEffect(() => {
     preload();
@@ -112,7 +119,7 @@ export const useAudioPlayer = (): AudioPlayer => {
       });
       activeAudioNodes.current.clear();
     };
-  }, [preload]);
+  }, []);
 
   return { play, stop, preload };
 };

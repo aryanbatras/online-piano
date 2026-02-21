@@ -1,4 +1,3 @@
-import React from 'react';
 import { PianoKey as PianoKeyType } from '@/types/piano';
 import styles from '../styles/Piano.module.css';
 
@@ -11,20 +10,23 @@ interface PianoKeyProps {
   style?: React.CSSProperties;
 }
 
-export const PianoKey: React.FC<PianoKeyProps> = ({ pianoKey, isActive, onPressed, onReleased, showKeyboardMappings, style }) => {
-  const handleMouseDown = () => {
-    onPressed(pianoKey.id);
-  };
-
-  const handleMouseUp = () => {
-    onReleased(pianoKey.id);
-  };
-
+export const PianoKey = ({ 
+  pianoKey, 
+  isActive, 
+  onPressed, 
+  onReleased, 
+  showKeyboardMappings, 
+  style 
+}: PianoKeyProps) => {
+  const handleMouseDown = () => onPressed(pianoKey.id);
+  const handleMouseUp = () => onReleased(pianoKey.id);
+  const handleMouseLeave = () => onReleased(pianoKey.id);
+  
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
     onPressed(pianoKey.id);
   };
-
+  
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
     onReleased(pianoKey.id);
@@ -33,20 +35,25 @@ export const PianoKey: React.FC<PianoKeyProps> = ({ pianoKey, isActive, onPresse
   const keyClasses = [
     styles.pianoKey,
     styles[pianoKey.type],
-    isActive ? styles.active : ''
+    isActive && styles.active
   ].filter(Boolean).join(' ');
 
-  const combinedStyle = {
-    ...style
-  };
+  const keyboardMapping = showKeyboardMappings && pianoKey.keyboardKey ? (
+    <span className={styles.keyboardMapping}>
+      {pianoKey.type === 'black' 
+        ? pianoKey.keyboardKey.toUpperCase() 
+        : pianoKey.keyboardKey.toLowerCase()
+      }
+    </span>
+  ) : null;
 
   return (
     <div
       className={keyClasses}
-      style={combinedStyle}
+      style={style}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       role="button"
@@ -56,12 +63,8 @@ export const PianoKey: React.FC<PianoKeyProps> = ({ pianoKey, isActive, onPresse
       data-key-id={pianoKey.id}
     >
       <span className={styles.keyLabel}>
-        {showKeyboardMappings && pianoKey.keyboardKey && (
-          <span className={styles.keyboardMapping}>
-            {pianoKey.type === 'black' ? pianoKey.keyboardKey.toUpperCase() : pianoKey.keyboardKey.toLowerCase()}
-          </span>
-        )}
+        {keyboardMapping}
       </span>
     </div>
-  );
+  )
 };

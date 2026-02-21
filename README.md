@@ -1,40 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Virtual Piano
+
+A modern, responsive virtual piano application built with Next.js and React. Features 88 keys across 4 rows with keyboard mappings and Web Audio API support.
+
+## Features
+
+- **88 Piano Keys**: Full piano keyboard with white and black keys
+- **4 Row Layout**: Optimized layout for different screen sizes
+- **Keyboard Mappings**: Play using your computer keyboard
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Touch Support**: Full touch event support for mobile devices
+- **Web Audio API**: High-quality audio playback with proper gain control
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Then run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Keyboard Mappings
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+The piano supports keyboard mappings across 4 rows:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- **Row 1**: Number keys (1-0, -, =)
+- **Row 2**: Q-P keys (use Shift for black keys)
+- **Row 3**: A-L keys (use Shift for black keys)
+- **Row 4**: Z-/ keys (use Shift for black keys)
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Piano.tsx          # Main piano component
+│   ├── PianoRow.tsx       # Individual piano row
+│   └── PianoKey.tsx       # Individual piano key
+├── hooks/
+│   ├── useAudioPlayer.ts  # Audio playback logic
+│   └── useKeyboardMappings.ts # Keyboard event handling
+├── data/
+│   └── pianoData.ts       # Piano data and mappings
+├── types/
+│   └── piano.ts           # TypeScript type definitions
+└── styles/
+    └── Piano.module.css   # Piano styling
+```
+
+## Technologies Used
+
+- **Next.js 16.1.6**: React framework
+- **React 19.2.3**: UI library
+- **TypeScript**: Type safety
+- **Tailwind CSS**: Utility-first CSS framework
+- **Web Audio API**: Audio playback
+
+## Performance Optimizations
+
+- React.memo for component memoization
+- useMemo for expensive calculations
+- useCallback for event handlers
+- Audio preloading and caching
+- Optimized re-rendering patterns
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://react.dev)
+- [TypeScript Documentation](https://www.typescriptlang.org)
+- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)

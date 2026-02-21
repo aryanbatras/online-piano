@@ -1,44 +1,30 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { pianoRows } from '@/data/pianoData';
-import { findPianoKeyByKeyCode } from '@/data/pianoData';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
+import { useKeyboardMappings } from '@/hooks/useKeyboardMappings';
 import { PianoRow } from './PianoRow';
 import styles from '../styles/Piano.module.css';
 
 export default function Piano() {
   const [activeKeys, setActiveKeys] = useState<Set<number>>(new Set());
   const [showKeyboardMappings, setShowKeyboardMappings] = useState(true);
-  const { play, stop, preload } = useAudioPlayer();
+  const { play, stop, preload } = useAudioPlayer(); 
 
-  const handleKeyPressed = useCallback((keyId: number) => {
+  const handleKeyPressed = (keyId: number) => {
     setActiveKeys(prev => new Set(prev).add(keyId));
     play(keyId);
-  }, [play]);
+  };
 
-  const handleKeyReleased = useCallback((keyId: number) => {
+  const handleKeyReleased = (keyId: number) => {
     setActiveKeys(prev => {
       const newSet = new Set(prev);
       newSet.delete(keyId);
       return newSet;
     });
     stop(keyId);
-  }, [stop]);
+  };
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.repeat) return;
-    
-    const pianoKey = findPianoKeyByKeyCode(e.key, e.shiftKey);
-    if (pianoKey) {
-      handleKeyPressed(pianoKey.id);
-    }
-  }, [handleKeyPressed]);
-
-  const handleKeyUp = useCallback((e: KeyboardEvent) => {
-    const pianoKey = findPianoKeyByKeyCode(e.key, e.shiftKey);
-    if (pianoKey) {
-      handleKeyReleased(pianoKey.id);
-    }
-  }, [handleKeyReleased]);
+  const { handleKeyDown, handleKeyUp } = useKeyboardMappings(handleKeyPressed, handleKeyReleased);
 
   useEffect(() => {
     preload();
@@ -54,6 +40,10 @@ export default function Piano() {
     };
   }, [handleKeyDown, handleKeyUp]);
 
+  const toggleKeyboardMappings = () => {
+    setShowKeyboardMappings(prev => !prev);
+  };
+
   return (
     <div className={styles.pianoContainer}>
       <div className={styles.pianoTitle}>
@@ -62,7 +52,8 @@ export default function Piano() {
       <div className={styles.toggleContainer}>
         <button
           className={styles.toggleButton}
-          onClick={() => setShowKeyboardMappings(!showKeyboardMappings)}
+          onClick={toggleKeyboardMappings}
+          aria-label={showKeyboardMappings ? 'Hide keyboard mappings' : 'Show keyboard mappings'}
         >
           {showKeyboardMappings ? 'Hide' : 'Show'} Keyboard Mappings
         </button>

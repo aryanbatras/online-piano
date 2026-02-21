@@ -11,7 +11,7 @@ import {
   downloadBlob, 
   generateRecordingFileName,
   DEFAULT_RECORDING_CONFIG 
-} from '@/utils/audioUtils';
+} from '@/utils';
 
 export const useAudioRecorder = (): AudioRecorderState & AudioRecorderActions => {
   const [state, setState] = useState<AudioRecorderState>({

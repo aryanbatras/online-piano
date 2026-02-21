@@ -1,4 +1,4 @@
-import { findPianoKeyByKeyCode } from '@/utils/pianoUtils';
+import { findPianoKeyByKeyCode } from '@/utils';
 import { pianoKeys } from '@/data/pianoData';
 
 export const useKeyboardMappings = (onKeyPressed: (keyId: number) => void, onKeyReleased: (keyId: number) => void) => {

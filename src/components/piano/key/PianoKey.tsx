@@ -1,8 +1,9 @@
+import React, { memo } from 'react';
 import { PianoKeyProps } from '@/types/piano';
 import { usePianoKey } from '@/hooks/piano/key';
 import styles from '@/styles/Piano.module.css';
 
-export const PianoKey = ({ pianoKey, isActive, isRemote, onPressed, onReleased, showKeyboardMappings, style }: PianoKeyProps) => {
+export const PianoKey = memo(({ pianoKey, isActive, isRemote, onPressed, onReleased, showKeyboardMappings, style }: PianoKeyProps) => {
   const { events, keyClasses, keyboardMapping } = usePianoKey(pianoKey, isActive, onPressed, onReleased, showKeyboardMappings);
 
   const combinedClasses = `${keyClasses} ${isRemote ? styles.remoteKey : ''}`;
@@ -30,5 +31,7 @@ export const PianoKey = ({ pianoKey, isActive, isRemote, onPressed, onReleased, 
         )}
       </span>
     </div>
-  )
-};
+  );
+});
+
+PianoKey.displayName = 'PianoKey';

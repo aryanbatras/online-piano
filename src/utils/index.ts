@@ -1,3 +1,6 @@
+export * from './pianoUtils';
+export * from './audioUtils';
+
 export const createAudioContext = (): AudioContext => {
   return new (window.AudioContext || (window as any).webkitAudioContext)();
 };

@@ -1,10 +1,10 @@
 import dynamic from 'next/dynamic';
 
-const CollaborativePiano = dynamic(() => import('../components/piano/CollaborativePiano'), {
+const Piano = dynamic(() => import('../components/piano/CollaborativePiano'), {
   ssr: false, 
 });
 
 export function PianoPage() {
-  return <CollaborativePiano />;
+  return <Piano />;
 }
 export default PianoPage;

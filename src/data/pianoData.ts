@@ -1,5 +1,5 @@
 import { PianoKey, PianoRow, KeyboardMappings, KeyType } from '@/types/piano';
-import { generatePianoKeys, generatePianoRows } from '@/utils/pianoUtils';
+import { generatePianoKeys, generatePianoRows } from '@/utils';
 
 export const notes = [
   'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'

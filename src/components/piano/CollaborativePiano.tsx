@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { pianoRows } from "@/data/pianoData";
 import { useAudioRecorder } from "@/hooks/audio/useAudioRecorder";
 import { usePianoUI, usePianoSystem } from "@/hooks/piano";
@@ -47,38 +47,52 @@ export default function CollaborativePiano() {
     };
   }, []);
 
-  const joinRoom = () => {
+  const joinRoom = useCallback(() => {
     if (roomId.trim() && isConnected) {
       socket.emit('join-room', roomId.trim());
       setCurrentRoom(roomId.trim());
     }
-  };
+  }, [roomId, isConnected]);
 
-  const leaveRoom = () => {
+  const leaveRoom = useCallback(() => {
     if (currentRoom) {
       socket.emit('leave-room', currentRoom);
       setCurrentRoom('');
       setUserCount(0);
     }
-  };
+  }, [currentRoom]);
 
-  const connect = () => {
+  const connect = useCallback(() => {
     socket.connect();
-  };
+  }, []);
 
-  const disconnect = () => {
+  const disconnect = useCallback(() => {
     socket.disconnect();
     setCurrentRoom('');
     setUserCount(0);
-  };
+  }, []);
 
-  const isKeyActive = (keyId: number) => {
+  const isKeyActive = useCallback((keyId: number) => {
     return activeKeys.has(keyId) || remoteActiveKeys.has(keyId);
-  };
+  }, [activeKeys, remoteActiveKeys]);
 
-  const isRemoteKey = (keyId: number) => {
+  const isRemoteKey = useCallback((keyId: number) => {
     return remoteActiveKeys.has(keyId);
-  };
+  }, [remoteActiveKeys]);
+
+  const memoizedPianoRows = useMemo(() => 
+    pianoRows.map((row) => (
+      <PianoRow
+        key={row.rowNumber}
+        row={row}
+        activeKeys={activeKeys}
+        remoteActiveKeys={remoteActiveKeys}
+        onPressed={handleKeyPressed}
+        onReleased={handleKeyReleased}
+        showKeyboardMappings={showKeyMap}
+      />
+    )), [pianoRows, activeKeys, remoteActiveKeys, handleKeyPressed, handleKeyReleased, showKeyMap]
+  );
 
   return (
     <div className={styles.pianoContainer}>
@@ -146,17 +160,7 @@ export default function CollaborativePiano() {
       </div>
       
       <div className={styles.piano}>
-        {pianoRows.map((row) => (
-          <PianoRow
-            key={row.rowNumber}
-            row={row}
-            activeKeys={activeKeys}
-            remoteActiveKeys={remoteActiveKeys}
-            onPressed={handleKeyPressed}
-            onReleased={handleKeyReleased}
-            showKeyboardMappings={showKeyMap}
-          />
-        ))}
+        {memoizedPianoRows}
       </div>
     </div>
   );

@@ -92,7 +92,7 @@ export const useAudioPlayer = (): AudioPlayer & AudioPlayerState & AudioPlayerAc
     return await context.decodeAudioData(arrayBuffer);
   }, []);
 
-  const preload = useCallback(async (): Promise<void> => {
+  const preload = useCallback(async (priorityKeys: number[] = []): Promise<void> => {
     if (isPreloadedRef.current || isLoadingRef.current) return;
 
     isLoadingRef.current = true;
@@ -100,18 +100,42 @@ export const useAudioPlayer = (): AudioPlayer & AudioPlayerState & AudioPlayerAc
 
     try {
       const context = getAudioContext();
-      const loadPromises = pianoKeys.map(async (key) => {
+      
+      // Load priority keys first (first octave for immediate interaction)
+      const keysToLoad = priorityKeys.length > 0 
+        ? priorityKeys 
+        : pianoKeys.slice(0, 12).map(key => key.id); // First octave only
+      
+      const loadPromises = keysToLoad.map(async (keyId) => {
         try {
-          const audioBuffer = await loadAudioBuffer(key.audioPath, context);
-          managerRef.current.audioBuffers.set(key.id, audioBuffer);
+          const pianoKey = pianoKeys.find(key => key.id === keyId);
+          if (!pianoKey) return;
+          
+          const audioBuffer = await loadAudioBuffer(pianoKey.audioPath, context);
+          managerRef.current.audioBuffers.set(keyId, audioBuffer);
         } catch (error) {
-          console.warn(`Failed to preload audio for key ${key.id}:`, error);
+          console.warn(`Failed to preload audio for key ${keyId}:`, error);
         }
       });
 
       await Promise.all(loadPromises);
-      isPreloadedRef.current = true;
+      
+      // Mark as preloaded for priority keys only
       updateState({ isPreloaded: true });
+      
+      // Load remaining keys in background with lower priority
+      setTimeout(() => {
+        const remainingKeys = pianoKeys.filter(key => !keysToLoad.includes(key.id));
+        remainingKeys.forEach(async (pianoKey) => {
+          try {
+            const audioBuffer = await loadAudioBuffer(pianoKey.audioPath, context);
+            managerRef.current.audioBuffers.set(pianoKey.id, audioBuffer);
+          } catch (error) {
+            console.warn(`Failed to load background audio for key ${pianoKey.id}:`, error);
+          }
+        });
+      }, 1000);
+      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to preload audio';
       updateState({ error: errorMessage });
@@ -124,12 +148,30 @@ export const useAudioPlayer = (): AudioPlayer & AudioPlayerState & AudioPlayerAc
 
   const play = useCallback((keyId: number): void => {
     const context = getAudioContext();
-    const audioBuffer = managerRef.current.audioBuffers.get(keyId);
+    let audioBuffer = managerRef.current.audioBuffers.get(keyId);
 
+    // Load audio on-demand if not already loaded
     if (!audioBuffer) {
-      console.warn(`No audio buffer found for key ${keyId}`);
-      return;
+      const pianoKey = pianoKeys.find(key => key.id === keyId);
+      if (pianoKey) {
+        loadAudioBuffer(pianoKey.audioPath, context)
+          .then(buffer => {
+            managerRef.current.audioBuffers.set(keyId, buffer);
+            playSound(keyId, buffer, context);
+          })
+          .catch(error => {
+            console.warn(`Failed to load audio for key ${keyId}:`, error);
+          });
+        return;
+      }
     }
+    
+    if (audioBuffer) {
+      playSound(keyId, audioBuffer, context);
+    }
+  }, [getAudioContext, loadAudioBuffer]);
+
+  const playSound = useCallback((keyId: number, audioBuffer: AudioBuffer, context: AudioContext): void => {
 
     try {
       const source = context.createBufferSource();
@@ -142,7 +184,8 @@ export const useAudioPlayer = (): AudioPlayer & AudioPlayerState & AudioPlayerAc
       source.connect(directGainNode);
       directGainNode.connect(context.destination);
       
-      if (managerRef.current.convolverNode && managerRef.current.reverbGainNode) {
+      // Only add reverb for desktop devices (performance optimization)
+      if (managerRef.current.convolverNode && managerRef.current.reverbGainNode && window.innerWidth > 768) {
         source.connect(reverbGainNode);
         reverbGainNode.connect(managerRef.current.convolverNode);
       }
@@ -163,7 +206,7 @@ export const useAudioPlayer = (): AudioPlayer & AudioPlayerState & AudioPlayerAc
       updateState({ error: errorMessage });
       console.error(`Error playing key ${keyId}:`, error);
     }
-  }, [getAudioContext, createGainNode, updateState]);
+  }, [createGainNode, updateState]);
 
   const stop = useCallback((keyId: number): void => {
     const nodesToStop: string[] = [];

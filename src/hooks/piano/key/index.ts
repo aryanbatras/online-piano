@@ -13,7 +13,5 @@
 // Level 1 - Foundation hooks
 export { useKeyEvents } from './useKeyEvents';
 export { useKeyClasses } from './useKeyClasses';
-export { useKeyboardMapping } from './useKeyboardMapping';
-
-
+export { useKeyDisplayText } from './useKeyDisplayText';
 export { usePianoKey } from './usePianoKey';

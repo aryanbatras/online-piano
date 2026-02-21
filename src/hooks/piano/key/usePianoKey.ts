@@ -1,6 +1,6 @@
 import { useKeyEvents } from './useKeyEvents';
 import { useKeyClasses } from './useKeyClasses';
-import { useKeyboardMapping } from './useKeyboardMapping';
+import { useKeyDisplayText } from './useKeyDisplayText';
 import { PianoKey as PianoKeyType } from '@/types/piano';
 
 export function usePianoKey(
@@ -12,7 +12,7 @@ export function usePianoKey(
 ) {
   const events = useKeyEvents(pianoKey.id, onPressed, onReleased);
   const keyClasses = useKeyClasses(pianoKey, isActive);
-  const keyboardMapping = useKeyboardMapping(pianoKey, showKeyboardMappings);
+  const keyboardMapping = useKeyDisplayText(pianoKey, showKeyboardMappings);
 
   return {
     events,

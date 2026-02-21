@@ -1,6 +1,6 @@
 import { PianoKey as PianoKeyType } from '@/types/piano';
 
-export function useKeyboardMapping(
+export function useKeyDisplayText(
   pianoKey: PianoKeyType,
   showKeyboardMappings: boolean
 ) {

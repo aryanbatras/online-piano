@@ -98,69 +98,69 @@ export default function CollaborativePiano() {
     <div className={styles.pianoContainer}>
       <div className={styles.pianoTitle}>Collaborative Virtual Piano</div>
       
-      <div className={styles.roomControls}>
-        {/* <div className={styles.connectionStatus}>
-          <span>{isConnected ? '🟢 Connected' : '🔴 Disconnected'}</span>
-          {currentRoom && (
-            <span className={styles.roomInfo}>
-              Room: {currentRoom} | Users: {userCount}
-            </span>
-          )}
-        </div> */}
-        
-        <div className={styles.connectionButtons}>
-          <button 
-            onClick={connect} 
-            disabled={isConnected}
-            className={styles.roomButton}
-          >
-            Connect
-          </button>
-          <button 
-            onClick={disconnect} 
-            disabled={!isConnected}
-            className={styles.roomButton}
-          >
-            Disconnect
-          </button>
-        </div>
-        
-        <div className={styles.roomJoin}>
-          <input
-            type="text"
-            placeholder="Enter room ID"
-            value={roomId}
-            onChange={(e) => setRoomId(e.target.value)}
-            className={styles.roomInput}
-          />
-          <button 
-            onClick={joinRoom} 
-            disabled={!isConnected || !roomId.trim()}
-            className={styles.roomButton}
-          >
-            Join Room
-          </button>
-          <button 
-            onClick={leaveRoom} 
-            disabled={!currentRoom}
-            className={styles.roomButton}
-          >
-            Leave Room
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.toggleContainer}>
-        <button className={styles.toggleButton} onClick={toggleKeyMap}>
-          {showKeyMap ? "Hide" : "Show"} Keyboard Mappings
-        </button>
-        <button className={styles.toggleButton} onClick={toggleRecord}>
-          {isRecording ? "Stop" : "Start"} Recording
-        </button>
-      </div>
-      
       <div className={styles.piano}>
         {memoizedPianoRows}
+      </div>
+
+      <div className={styles.controlsContainer}>
+        <div className={styles.controlSection}>
+          <div className={styles.sectionTitle}>Piano Controls</div>
+          <div className={styles.toggleContainer}>
+            <button className={styles.toggleButton} onClick={toggleKeyMap}>
+              {showKeyMap ? "Hide" : "Show"} Keyboard Mappings
+            </button>
+            <button className={styles.toggleButton} onClick={toggleRecord}>
+              {isRecording ? "Stop" : "Start"} Recording
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.controlSection}>
+          <div className={styles.sectionTitle}>Collaboration Server</div>
+          <div className={styles.sectionDescription}>Connect to play piano with others in real-time</div>
+          <div className={styles.roomControls}>
+            <div className={styles.connectionButtons}>
+              <button 
+                onClick={connect} 
+                disabled={isConnected}
+                className={styles.roomButton}
+              >
+                Connect
+              </button>
+              <button 
+                onClick={disconnect} 
+                disabled={!isConnected}
+                className={styles.roomButton}
+              >
+                Disconnect
+              </button>
+            </div>
+            
+            <div className={styles.roomJoin}>
+              <input
+                type="text"
+                placeholder="Enter room ID"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                className={styles.roomInput}
+              />
+              <button 
+                onClick={joinRoom} 
+                disabled={!isConnected || !roomId.trim()}
+                className={styles.roomButton}
+              >
+                Join Room
+              </button>
+              <button 
+                onClick={leaveRoom} 
+                disabled={!currentRoom}
+                className={styles.roomButton}
+              >
+                Leave Room
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
